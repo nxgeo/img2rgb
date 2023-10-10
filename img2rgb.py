@@ -2,9 +2,14 @@ from pandas import DataFrame
 from PIL import Image
 import streamlit as st
 
+st.set_page_config(
+    page_title="img2rgb",
+    page_icon="🤯"
+)
+
 st.title("Image to RGB")
 
-uploaded_image = st.file_uploader("Upload an image", ["jpg", "jpeg", "png"])
+uploaded_image = st.file_uploader("Upload an image", ["jpg", "jpeg", "png", "webp"])
 
 if uploaded_image is not None:
     image = Image.open(uploaded_image).convert("RGB")
