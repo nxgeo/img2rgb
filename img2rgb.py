@@ -4,7 +4,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="img2rgb",
-    page_icon="🧊"
+    page_icon="🤯"
 )
 
 st.title("Image to RGB")
