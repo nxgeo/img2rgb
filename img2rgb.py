@@ -28,6 +28,7 @@ if uploaded_image is not None:
         df = DataFrame(pixel_rgbs)
         df.index += 1
         df.columns += 1
+        df.columns.name = "Px"
 
     with st.spinner("Displaying result..."):
         st.dataframe(df)
