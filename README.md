@@ -11,26 +11,30 @@ img2rgb is a python image processing app to convert image into RGB data.
 
 ### Project Library
 
-`pip install pandas PIL streamlit`
+```
+pandas 
+PIL 
+streamlit
+```
 
 ## Installation
 1. Install all preresquisities.
 2. Initiate conda 
 
-`conda init`
+```conda init```
 
 3. Create virtual environment
 
-`conda create --name main-ds python=3.9`
+```conda create --name main-ds python=3.9```
 
 4. Activate virtual environment
 
-`conda activate main-ds`
+```conda activate main-ds```
 
 5. Install library
 
-`pip install pandas PIL streamlit`
+```pip install pandas PIL streamlit```
 
 6. Run the app
 
-`streamlit run img2rgb.py`
+```streamlit run img2rgb.py```
