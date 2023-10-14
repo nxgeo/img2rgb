@@ -1,3 +1,6 @@
 pandas
 Pillow
 streamlit
+cv2
+matplotlib
+numpy

@@ -15,6 +15,9 @@ img2rgb is a python image processing app to convert image into RGB data.
 pandas 
 PIL 
 streamlit
+cv2
+matplotlib
+numpy
 ```
 
 ## Installation

@@ -8,8 +8,6 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-import pandas as pd
-
 st.set_page_config(
     page_title="img2rgb", 
     page_icon="🌈",
@@ -61,9 +59,14 @@ if uploaded_image is not None:
         img_rgb = np.array(image)
 
         # Calculate RGB histogram
-        r_hist = cv2.calcHist([img_rgb], [0], None, [256], [0, 256])
-        g_hist = cv2.calcHist([img_rgb], [1], None, [256], [0, 256])
-        b_hist = cv2.calcHist([img_rgb], [2], None, [256], [0, 256])
+        r_hist = cv2.calcHist([img_rgb], [0], None, [256], [0, 256]).flatten()
+        g_hist = cv2.calcHist([img_rgb], [1], None, [256], [0, 256]).flatten()
+        b_hist = cv2.calcHist([img_rgb], [2], None, [256], [0, 256]).flatten()
+
+        # Accumulate RGB histogram values
+        r_hist_accumulated = np.cumsum(r_hist)
+        g_hist_accumulated = np.cumsum(g_hist)
+        b_hist_accumulated = np.cumsum(b_hist)
 
         # Determine fig
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 6))
@@ -83,11 +86,22 @@ if uploaded_image is not None:
         # Display the plot in Streamlit
         st.pyplot(fig)
 
-        # Pixel data to DataFrame
-        df_rgb = pd.DataFrame(img_rgb.reshape(-1, 3), columns=["Red", "Green", "Blue"])
+        # Table RGB
+        df_rgb = DataFrame({
+            #"Red": list(range(256)),
+            #"Green": list(range(256)),
+            #"Blue": list(range(256)),
+            "Red Frequency": r_hist,
+            "Green Frequency": g_hist,
+            "Blue Frequency": b_hist
+        })
 
-        st.header("Pixel Data (RGB)")
-        st.dataframe(df_rgb)
+        # Transpose the DataFrame
+        df_rgb_transposed = df_rgb.transpose()
+
+        st.header("RGB Table Frequencies")
+        st.dataframe(df_rgb_transposed)
+        st.caption("Note: Each row represents the Total RGB values per bit in the image.")
 
     with st.spinner("Displaying Grayscale Histogram"):
 
@@ -97,7 +111,7 @@ if uploaded_image is not None:
         img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
         # Calculate grayscale histogram
-        gray_hist = cv2.calcHist([img_gray], [0], None, [256], [0, 256])
+        gray_hist = cv2.calcHist([img_gray], [0], None, [256], [0, 256]).flatten()
 
         # Determine fig
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 6))
@@ -113,3 +127,15 @@ if uploaded_image is not None:
 
         # Display the plot in Streamlit
         st.pyplot(fig)
+
+        # Grayscale Table
+        df_gray = DataFrame({
+            # "Pixel Value": list(range(256)),
+            "Frequency": gray_hist
+        })
+        # Transpose the DataFrame
+        df_gray_transposed = df_gray.transpose()
+        st.header("Gray Table Frequencies")
+        st.dataframe(df_gray_transposed)
+        st.caption("Note: Each row represents the Total Gray values per bit in the image.")
+        
