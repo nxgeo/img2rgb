@@ -53,7 +53,6 @@ if uploaded_image is not None:
     with st.spinner("Displaying RGB histogram...."):
 
         st.header("RGB Histogram")
-        # Read the uploaded image
 
         # Convert Image to RGB
         img_rgb = np.array(image)
@@ -85,24 +84,7 @@ if uploaded_image is not None:
 
         # Display the plot in Streamlit
         st.pyplot(fig)
-
-        # Table RGB
-        df_rgb = DataFrame({
-            #"Red": list(range(256)),
-            #"Green": list(range(256)),
-            #"Blue": list(range(256)),
-            "Red Frequency": r_hist,
-            "Green Frequency": g_hist,
-            "Blue Frequency": b_hist
-        })
-
-        # Transpose the DataFrame
-        df_rgb_transposed = df_rgb.transpose()
-
-        st.header("RGB Table Frequencies")
-        st.dataframe(df_rgb_transposed)
-        st.caption("Note: Each row represents the Total RGB values per bit in the image.")
-
+     
     with st.spinner("Displaying Grayscale Histogram"):
 
         st.header("Grayscale Histogram")
@@ -128,14 +110,21 @@ if uploaded_image is not None:
         # Display the plot in Streamlit
         st.pyplot(fig)
 
-        # Grayscale Table
-        df_gray = DataFrame({
-            # "Pixel Value": list(range(256)),
-            "Frequency": gray_hist
+
+    with st.spinner("Displaying Table Frequencies...."):
+        # Table Frequencies
+        df_freq= DataFrame({
+            #"Red": list(range(256)),
+            #"Green": list(range(256)),
+            #"Blue": list(range(256)),
+            "Red Frequency": r_hist,
+            "Green Frequency": g_hist,
+            "Blue Frequency": b_hist,
+            "Grayscale Frequency": gray_hist
         })
         # Transpose the DataFrame
-        df_gray_transposed = df_gray.transpose()
-        st.header("Gray Table Frequencies")
-        st.dataframe(df_gray_transposed)
-        st.caption("Note: Each row represents the Total Gray values per bit in the image.")
+        df_freq_transposed = df_freq.transpose()
+        st.header("Table Frequencies")
+        st.dataframe(df_freq_transposed)
+        st.caption("Note: Each row represents the Total values per bit in the image.")
         
