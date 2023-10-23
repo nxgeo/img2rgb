@@ -2,3 +2,4 @@ matplotlib
 pandas
 Pillow
 streamlit
+colorsys
