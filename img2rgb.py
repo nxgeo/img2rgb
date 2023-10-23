@@ -54,6 +54,7 @@ if uploaded_image is not None:
 
     n_channels = 7
     n_colors = 256
+    labels = ["Red", "Green", "Blue", "Gray", "Hue", "Saturation", "Lightness"]
 
     with st.spinner("Calculating pixel frequency..."):
         px_freq = [[0 for _ in range(n_colors)] for _ in range(n_channels)]
@@ -110,28 +111,51 @@ if uploaded_image is not None:
         st.divider()
 
     with st.spinner("Normalizing histograms..."):
+        # Calculate total number of pixels
         total_pixels = image.width * image.height
-        for i in range(n_channels):
-            for j in range(n_colors):
-                px_freq[i][j] /= total_pixels
 
+        # Normalize histograms
+        normalized_px_freq = [[freq / total_pixels for freq in channel] for channel in px_freq]
+        normalized_hue_freq = [freq / total_pixels for freq in px_freq[4]]
+        normalized_saturation_freq = [freq / total_pixels for freq in px_freq[5]]
+        normalized_lightness_freq = [freq / total_pixels for freq in px_freq[6]]
+
+        # Display normalized pixel frequency data
     with st.spinner("Displaying normalized pixel frequency data..."):
-        df = DataFrame(px_freq, index=["R", "G", "B", "GS"])
+        df_normalized = DataFrame(
+            normalized_px_freq, 
+            index=["R", "G", "B", "GS", "Hue", "Saturation", "Lightness"]
+        )
         st.subheader("Normalized Pixel Frequency Data")
-        st.dataframe(df)
+        st.dataframe(df_normalized)
 
+    # Creating normalized RGB and Grayscale histograms
     with st.spinner("Creating normalized RGB and Grayscale histograms..."):
-        fig, ax = plt.subplots(2, 2, figsize=(10, 8))
+        fig_normalized, ax_normalized = plt.subplots(2, 2, figsize=(10, 8))
         for c in range(n_channels):
             row, col = divmod(c, 2)
-            ax[row, col].bar(
-                range(n_colors), px_freq[c], label=labels[c], color=labels[c]
-            )
-            ax[row, col].set_title(labels[c])
-            ax[row, col].set_xlabel("Pixel Intensity")
-            ax[row, col].set_ylabel("Pixel Frequency")
+            if row < 2 and col < 2:
+                ax_normalized[row, col].bar(
+                    range(n_colors), normalized_px_freq[c], label=labels[c], color=labels[c]
+                )
+                ax_normalized[row, col].set_title(labels[c])
+                ax_normalized[row, col].set_xlabel("Pixel Intensity")
         plt.suptitle("Normalized Histograms")
         plt.tight_layout()
 
         st.subheader("Normalized Histograms")
-        st.pyplot(fig)
+        st.pyplot(fig_normalized)
+
+    # Create normalized HSL histograms
+    with st.spinner("Creating normalized HSL histograms..."):
+        fig_normalized_hsl, ax_normalized_hsl = plt.subplots(3, 1, figsize=(6, 12))
+        hsl_labels = ["Hue", "Saturation", "Lightness"]
+        normalized_hsl_freq = [normalized_hue_freq, normalized_saturation_freq, normalized_lightness_freq]
+        color_hsl = ["brown", "pink", "violet"]
+        for c in range(3):
+            ax_normalized_hsl[c].bar(range(n_colors), normalized_hsl_freq[c], label=hsl_labels[c], color=color_hsl[c])
+            ax_normalized_hsl[c].set_title(hsl_labels[c])
+            ax_normalized_hsl[c].set_xlabel("Pixel Intensity")
+        plt.tight_layout()
+        st.subheader("Normalized HSL Histograms")
+        st.pyplot(fig_normalized_hsl)
