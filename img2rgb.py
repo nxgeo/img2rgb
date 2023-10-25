@@ -45,23 +45,58 @@ if uploaded_image is not None:
             [image.getpixel((x, y)) for x in range(image.width)]
             for y in range(image.height)
         ]
+        # Decimal Format
         pixel_hsls = [
             [tuple(round(val, 2) for val in colorsys.rgb_to_hls(r / 255, g / 255, b / 255)) for r, g, b in row]
             for row in pixel_rgbs
         ]
+        # 255 Format
+        pixel_hsl = [
+            [tuple(int(val * 255) for val in hsl) for hsl in row]
+            for row in pixel_hsls
+        ]
+        # Percentile Format
+        pixel_hsls_percentile = [
+            [(int(round(hsl[0] * 100)), int(round(hsl[1] * 100)), int(round(hsl[2] * 100))) for hsl in row]
+            for row in pixel_hsls
+        ]
 
-    with st.spinner("Converting pixel data to DataFrame..."):
-        df = DataFrame(pixel_rgbs)
-        df.index += 1
-        df.columns += 1
-        df.index.name = "Px"
+    with st.spinner("Converting RGB pixel data to DataFrame..."):
+        df_rgb = DataFrame(pixel_rgbs)
+        df_rgb.index += 1
+        df_rgb.columns += 1
+        df_rgb.index.name = "Px"
 
-    with st.spinner("Displaying pixel data..."):
-        st.subheader("Pixel Data")
-        st.dataframe(df)
+    with st.spinner("Converting HSL pixel data decimal to DataFrame..."):
+        df_hsls = DataFrame(pixel_hsls_percentile)
+        df_hsls.index += 1
+        df_hsls.columns += 1
+        df_hsls.index.name = "Px"
+
+    with st.spinner("Converting HSL pixel data 255 format to DataFrame..."):
+        df_hsl = DataFrame(pixel_hsl)
+        df_hsl.index += 1
+        df_hsl.columns += 1
+        df_hsl.index.name = "Px"
+
+    with st.spinner("Displaying RGB pixel data..."):
+        st.subheader("RGB Pixel Data Table")
+        st.dataframe(df_rgb)
         st.caption("Note: Each cell represents the RGB value of a pixel in the image.")
 
     st.divider()
+
+    with st.spinner("Displaying HSL pixel data..."):
+        st.subheader("HSL Pixel Data Table (percentile format)")
+        st.dataframe(df_hsls)
+        st.caption("Note: Each cell represents the HSL value of a pixel in the image.")
+
+    st.divider()
+
+    with st.spinner("Displaying HSL pixel data..."):
+        st.subheader("HSL Pixel Data Table (255 Format)")
+        st.dataframe(df_hsl)
+        st.caption("Note: Each cell represents the HSL value of a pixel in the image.")
 
     n_channels = 7
     n_colors = 256
@@ -109,7 +144,7 @@ if uploaded_image is not None:
         st.divider()
 
     with st.spinner("Creating HSL Histogram..."):
-        fig_hsl, ax_hsl = plt.subplots(3, 1, figsize=(6, 12))
+        fig_hsl, ax_hsl = plt.subplots(1, 3, figsize=(10, 4))
         hsl_labels = ["Hue", "Saturation", "Lightness"]
         color_hsl = ["brown", "pink", "violet"]
         for c in range(3):
@@ -159,7 +194,7 @@ if uploaded_image is not None:
 
     # Create normalized HSL histograms
     with st.spinner("Creating normalized HSL histograms..."):
-        fig_normalized_hsl, ax_normalized_hsl = plt.subplots(3, 1, figsize=(6, 12))
+        fig_normalized_hsl, ax_normalized_hsl = plt.subplots(1, 3, figsize=(10, 4))
         hsl_labels = ["Hue", "Saturation", "Lightness"]
         normalized_hsl_freq = [normalized_hue_freq, normalized_saturation_freq, normalized_lightness_freq]
         color_hsl = ["brown", "pink", "violet"]
