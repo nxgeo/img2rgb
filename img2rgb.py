@@ -27,6 +27,17 @@ if uploaded_image is not None:
         "Resolution": f"{image.width} × {image.height}",
     }
 
+    custom_css = """
+        <style>
+            thead {
+                display: none;
+            }
+        </style>
+    """
+
+    # Display the custom CSS and the table
+    st.markdown(custom_css, unsafe_allow_html=True)
+
     st.table(image_attrs)
 
     with st.spinner("Getting RGB value for each pixel..."):
