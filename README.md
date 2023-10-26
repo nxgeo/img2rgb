@@ -16,6 +16,7 @@ pandas
 PIL 
 streamlit
 colorsys
+numpy
 ```
 
 ## Installation
@@ -34,8 +35,8 @@ colorsys
 
 5. Install library
 
-```pip install pandas PIL streamlit colorsys```
+```pip install pandas PIL streamlit colorsys numpy```
 
 6. Run the app
 
-```streamlit run img2rgb.py```
+```streamlit run Home.py```
