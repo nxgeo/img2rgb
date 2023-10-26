@@ -6,11 +6,11 @@ import streamlit as st
 import colorsys
 
 st.set_page_config(
-    page_title="imgproc", 
+    page_title="Image Processing", 
     page_icon="🖼️"
 )
 
-st.title("🖼️Image Processing 🖼️")
+st.title("🖼️Image Processing")
 
 uploaded_image = st.file_uploader("Upload an image", ["jpg", "jpeg", "png", "webp"])
 
