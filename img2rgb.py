@@ -27,6 +27,17 @@ if uploaded_image is not None:
         "Resolution": f"{image.width} × {image.height}",
     }
 
+    custom_css = """
+        <style>
+            thead {
+                display: none;
+            }
+        </style>
+    """
+
+    # Display the custom CSS and the table
+    st.markdown(custom_css, unsafe_allow_html=True)
+
     st.table(image_attrs)
 
     with st.spinner("Getting RGB value for each pixel..."):
@@ -34,26 +45,62 @@ if uploaded_image is not None:
             [image.getpixel((x, y)) for x in range(image.width)]
             for y in range(image.height)
         ]
+        # Decimal Format
         pixel_hsls = [
             [tuple(round(val, 2) for val in colorsys.rgb_to_hls(r / 255, g / 255, b / 255)) for r, g, b in row]
             for row in pixel_rgbs
         ]
+        # 255 Format
+        pixel_hsl = [
+            [tuple(int(val * 255) for val in hsl) for hsl in row]
+            for row in pixel_hsls
+        ]
+        # Percentile Format
+        pixel_hsls_percentile = [
+            [(int(round(hsl[0] * 100)), int(round(hsl[1] * 100)), int(round(hsl[2] * 100))) for hsl in row]
+            for row in pixel_hsls
+        ]
 
-    with st.spinner("Converting pixel data to DataFrame..."):
-        df = DataFrame(pixel_rgbs)
-        df.index += 1
-        df.columns += 1
-        df.index.name = "Px"
+    with st.spinner("Converting RGB pixel data to DataFrame..."):
+        df_rgb = DataFrame(pixel_rgbs)
+        df_rgb.index += 1
+        df_rgb.columns += 1
+        df_rgb.index.name = "Px"
 
-    with st.spinner("Displaying pixel data..."):
-        st.subheader("Pixel Data")
-        st.dataframe(df)
+    with st.spinner("Converting HSL pixel data decimal to DataFrame..."):
+        df_hsls = DataFrame(pixel_hsls_percentile)
+        df_hsls.index += 1
+        df_hsls.columns += 1
+        df_hsls.index.name = "Px"
+
+    with st.spinner("Converting HSL pixel data 255 format to DataFrame..."):
+        df_hsl = DataFrame(pixel_hsl)
+        df_hsl.index += 1
+        df_hsl.columns += 1
+        df_hsl.index.name = "Px"
+
+    with st.spinner("Displaying RGB pixel data..."):
+        st.subheader("RGB Pixel Data Table")
+        st.dataframe(df_rgb)
         st.caption("Note: Each cell represents the RGB value of a pixel in the image.")
 
     st.divider()
 
+    with st.spinner("Displaying HSL pixel data..."):
+        st.subheader("HSL Pixel Data Table (percentile format)")
+        st.dataframe(df_hsls)
+        st.caption("Note: Each cell represents the HSL value of a pixel in the image.")
+
+    st.divider()
+
+    with st.spinner("Displaying HSL pixel data..."):
+        st.subheader("HSL Pixel Data Table (255 Format)")
+        st.dataframe(df_hsl)
+        st.caption("Note: Each cell represents the HSL value of a pixel in the image.")
+
     n_channels = 7
     n_colors = 256
+    labels = ["Red", "Green", "Blue", "Gray", "Hue", "Saturation", "Lightness"]
 
     with st.spinner("Calculating pixel frequency..."):
         px_freq = [[0 for _ in range(n_colors)] for _ in range(n_channels)]
@@ -97,7 +144,7 @@ if uploaded_image is not None:
         st.divider()
 
     with st.spinner("Creating HSL Histogram..."):
-        fig_hsl, ax_hsl = plt.subplots(3, 1, figsize=(6, 12))
+        fig_hsl, ax_hsl = plt.subplots(1, 3, figsize=(10, 4))
         hsl_labels = ["Hue", "Saturation", "Lightness"]
         color_hsl = ["brown", "pink", "violet"]
         for c in range(3):
@@ -110,28 +157,51 @@ if uploaded_image is not None:
         st.divider()
 
     with st.spinner("Normalizing histograms..."):
+        # Calculate total number of pixels
         total_pixels = image.width * image.height
-        for i in range(n_channels):
-            for j in range(n_colors):
-                px_freq[i][j] /= total_pixels
 
+        # Normalize histograms
+        normalized_px_freq = [[freq / total_pixels for freq in channel] for channel in px_freq]
+        normalized_hue_freq = [freq / total_pixels for freq in px_freq[4]]
+        normalized_saturation_freq = [freq / total_pixels for freq in px_freq[5]]
+        normalized_lightness_freq = [freq / total_pixels for freq in px_freq[6]]
+
+        # Display normalized pixel frequency data
     with st.spinner("Displaying normalized pixel frequency data..."):
-        df = DataFrame(px_freq, index=["R", "G", "B", "GS"])
+        df_normalized = DataFrame(
+            normalized_px_freq, 
+            index=["R", "G", "B", "GS", "Hue", "Saturation", "Lightness"]
+        )
         st.subheader("Normalized Pixel Frequency Data")
-        st.dataframe(df)
+        st.dataframe(df_normalized)
 
+    # Creating normalized RGB and Grayscale histograms
     with st.spinner("Creating normalized RGB and Grayscale histograms..."):
-        fig, ax = plt.subplots(2, 2, figsize=(10, 8))
+        fig_normalized, ax_normalized = plt.subplots(2, 2, figsize=(10, 8))
         for c in range(n_channels):
             row, col = divmod(c, 2)
-            ax[row, col].bar(
-                range(n_colors), px_freq[c], label=labels[c], color=labels[c]
-            )
-            ax[row, col].set_title(labels[c])
-            ax[row, col].set_xlabel("Pixel Intensity")
-            ax[row, col].set_ylabel("Pixel Frequency")
+            if row < 2 and col < 2:
+                ax_normalized[row, col].bar(
+                    range(n_colors), normalized_px_freq[c], label=labels[c], color=labels[c]
+                )
+                ax_normalized[row, col].set_title(labels[c])
+                ax_normalized[row, col].set_xlabel("Pixel Intensity")
         plt.suptitle("Normalized Histograms")
         plt.tight_layout()
 
         st.subheader("Normalized Histograms")
-        st.pyplot(fig)
+        st.pyplot(fig_normalized)
+
+    # Create normalized HSL histograms
+    with st.spinner("Creating normalized HSL histograms..."):
+        fig_normalized_hsl, ax_normalized_hsl = plt.subplots(1, 3, figsize=(10, 4))
+        hsl_labels = ["Hue", "Saturation", "Lightness"]
+        normalized_hsl_freq = [normalized_hue_freq, normalized_saturation_freq, normalized_lightness_freq]
+        color_hsl = ["brown", "pink", "violet"]
+        for c in range(3):
+            ax_normalized_hsl[c].bar(range(n_colors), normalized_hsl_freq[c], label=hsl_labels[c], color=color_hsl[c])
+            ax_normalized_hsl[c].set_title(hsl_labels[c])
+            ax_normalized_hsl[c].set_xlabel("Pixel Intensity")
+        plt.tight_layout()
+        st.subheader("Normalized HSL Histograms")
+        st.pyplot(fig_normalized_hsl)
