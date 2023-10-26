@@ -1,26 +1,13 @@
 import streamlit as st
 
-
-st.markdown(
-        """
-        <style>
-        img {
-            border-radius: 50%;
-            overflow: hidden;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
 # Create three columns
 col1, col2, col3 = st.columns(3)
 
 # User data for the three profiles (image URL and name)
 url_image = "https://preview.redd.it/leaks-kafkas-light-cone-v0-j1xyw44bp12b1.png?width=1410&format=png&auto=webp&s=3c61dbe07fba67940a17b3ce6928fa6340ad3610"
-profile1 = {"image_url": url_image, "name": "John Doe"}
-profile2 = {"image_url": url_image, "name": "Jane Smith"}
-profile3 = {"image_url": url_image, "name": "Alice Johnson"}
+profile1 = {"image_url": url_image, "name": "Arief"}
+profile2 = {"image_url": url_image, "name": "Gina"}
+profile3 = {"image_url": url_image, "name": "Niko"}
 
 # Add photo profile and name to each column
 col1.image(profile1["image_url"], caption=profile1["name"], use_column_width=True)
