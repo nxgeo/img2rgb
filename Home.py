@@ -1,5 +1,6 @@
 import streamlit as st
 
+st.title("Image Processing by Group 8")
 # Create three columns
 col1, col2, col3 = st.columns(3)
 
