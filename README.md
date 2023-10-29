@@ -1,6 +1,7 @@
 # img2rgb
 ## Definition
-img2rgb is a python image processing app to convert image into RGB data.
+
+img2rgb is a python image program that do: Image Operation, and Image Processing.
 
 ## Prerequisities
 ### Main Tool

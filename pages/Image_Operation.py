@@ -173,6 +173,6 @@ if result_image is not None:
     df_rgb_res.index += 1
     df_rgb_res.columns += 1
     df_rgb_res.index.name = "Px"
-    st.subheader("Pixel Data Table Column 2")
+    st.subheader("Pixel Data Table Result Image")
     st.dataframe(df_rgb_res)
     st.caption("Note: Each cell represents the value of a pixel in the image.")
