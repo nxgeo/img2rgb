@@ -18,6 +18,7 @@ PIL
 streamlit
 colorsys
 numpy
+stegano
 ```
 
 ## Installation
@@ -36,7 +37,7 @@ numpy
 
 5. Install library
 
-```pip install pandas PIL streamlit colorsys numpy```
+```pip install pandas PIL streamlit colorsys numpy stegano```
 
 6. Run the app
 
