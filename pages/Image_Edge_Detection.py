@@ -2,6 +2,12 @@ import streamlit as st
 import cv2
 import numpy as np
 
+st.set_page_config(
+    page_title="Image Steganography", 
+    page_icon="⌨",
+    layout="wide"
+)
+
 def edge_detection(image):
     # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
