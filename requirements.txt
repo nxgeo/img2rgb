@@ -2,6 +2,5 @@ matplotlib
 pandas
 Pillow
 streamlit
-colorsys
 numpy
 stegano
