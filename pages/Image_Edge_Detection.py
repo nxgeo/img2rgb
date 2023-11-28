@@ -62,7 +62,7 @@ def main():
         col1, col2 = st.columns(2)
 
         # Display the original image in the first column
-        col1.image(image, caption="Original Image", use_column_width=True)
+        col1.image(img_rgb, caption="Original Image", use_column_width=True)
 
         # Get and display pixel data for the original image in the first column
         with col1:
