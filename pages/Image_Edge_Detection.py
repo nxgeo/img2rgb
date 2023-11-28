@@ -10,20 +10,36 @@ st.set_page_config(
     layout="wide"
 )
 
-def edge_detection(image):
+def edge_detection(image, divisor=1):
     # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    # Apply Canny edge detection
-    edges = cv2.Canny(gray, 50, 150)
-    
-    return edges
+
+    # Apply Sobel operator for edge detection
+    sobel_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+
+    # Compute the gradient magnitude
+    gradient_mag = np.sqrt(sobel_x**2 + sobel_y**2)
+
+    # Normalize the gradient magnitude
+    gradient_mag = (gradient_mag / divisor).astype(np.uint8)
+
+    return gradient_mag
 
 def get_pixel_data(image):
-    pixel_data = [
-        [image.getpixel((x, y)) for x in range(image.width)]
-        for y in range(image.height)
-    ]
+    if image.mode == 'RGB':
+        pixel_data = [
+            [image.getpixel((x, y)) for x in range(image.width)]
+            for y in range(image.height)
+        ]
+    elif image.mode == 'L':
+        pixel_data = [
+            [image.getpixel((x, y)) for x in range(image.width)]
+            for y in range(image.height)
+        ]
+    else:
+        raise ValueError("Unsupported image mode")
+
     df = DataFrame(pixel_data)
     df.index += 1
     df.columns += 1
@@ -41,7 +57,6 @@ def main():
         # Read the uploaded image
         image = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), 1)
         img_rgb = Image.open(uploaded_file).convert("RGB")
-        img_gray = Image.open(uploaded_file).convert("L")
 
         # Use st.columns to create two columns
         col1, col2 = st.columns(2)
@@ -54,16 +69,17 @@ def main():
             st.subheader("Pixel Data Original")
             st.dataframe(get_pixel_data(img_rgb))
 
-        # Perform edge detection
-        edges = edge_detection(image)
+        # Perform edge detection with a divisor
+        divisor = st.slider("Divisor", min_value=1, max_value=10, value=1)
+        edges = edge_detection(image, divisor)
 
         # Display the edge detection result in the second column
-        col2.image(edges, caption="Edge Detection Result (Grayscale)", use_column_width=True)
+        col2.image(edges, caption="Edge Detection Result", use_column_width=True)
 
         # Get and display pixel data for the edge detection result in the second column
         with col2:
             st.subheader("Pixel Data Result")
-            st.dataframe(get_pixel_data(img_gray))
+            st.dataframe(get_pixel_data(Image.fromarray(edges)))
     else:
         st.warning("Please upload an image.")
 
