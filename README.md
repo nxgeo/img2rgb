@@ -13,12 +13,13 @@ img2rgb is a python image program that do: Image Operation, and Image Processing
 ### Project Library
 
 ```
-pandas 
-PIL 
+matplotlib
+pandas
+Pillow
 streamlit
-colorsys
 numpy
 stegano
+opencv-python-headless
 ```
 
 ## Installation
@@ -37,7 +38,7 @@ stegano
 
 5. Install library
 
-```pip install pandas PIL streamlit colorsys numpy stegano```
+```pip install -r requirement.txt```
 
 6. Run the app
 
