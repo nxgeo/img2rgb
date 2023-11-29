@@ -4,7 +4,7 @@ import streamlit as st
 from matplotlib import pyplot as plt
 
 st.set_page_config(
-    page_title="Image Steganography", 
+    page_title="Image Blur Detection", 
     page_icon="⌨",
     layout="wide"
 )
