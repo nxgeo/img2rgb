@@ -5,7 +5,7 @@ from pandas import DataFrame
 from PIL import Image
 
 st.set_page_config(
-    page_title="Image Edge Detection App", 
+    page_title="Image Edge Detection", 
     page_icon="⌨",
     layout="wide"
 )

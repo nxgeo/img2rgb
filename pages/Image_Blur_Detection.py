@@ -2,7 +2,12 @@ import cv2
 import numpy as np
 import streamlit as st
 from matplotlib import pyplot as plt
-from io import BytesIO
+
+st.set_page_config(
+    page_title="Image Steganography", 
+    page_icon="⌨",
+    layout="wide"
+)
 
 # Function to detect blur
 def detect_blur(image):
@@ -50,7 +55,7 @@ def detect_blur(image):
 
 
 # Streamlit app
-st.title('Blur Detection App')
+st.title('Image Blur Detection')
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
 
 if uploaded_file is not None:
