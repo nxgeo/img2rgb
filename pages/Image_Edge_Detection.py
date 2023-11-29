@@ -48,7 +48,7 @@ def get_pixel_data(image):
     return df
 
 def main():
-    st.title("Image Edge Detection App")
+    st.title("Image Edge Detection")
 
     # Upload image through Streamlit
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "webp"])
