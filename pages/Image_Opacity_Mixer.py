@@ -50,7 +50,13 @@ def main():
 
         # Combine images using the opacity slider
         opacity_slider = opacity_placeholder.slider("Opacity", min_value=0.0, max_value=1.0, value=0.5, step=0.01)
-        blended_image = blend_images(image1, image2, opacity_slider)
+
+        # Resize images to the same dimensions for blending
+        image1_for_blend = cv2.resize(image1, (width, height))
+        image2_for_blend = cv2.resize(image2, (width, height))
+
+        # Combine images using the opacity slider
+        blended_image = blend_images(image1_for_blend, image2_for_blend, opacity_slider)
         blended_image_rgb = cv2.cvtColor(blended_image, cv2.COLOR_BGR2RGB)
 
         # Display the blended image directly under the slider with reduced size
