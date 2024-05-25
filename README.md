@@ -1,6 +1,7 @@
 # img2rgb
 ## Definition
-img2rgb is a python image processing app to convert image into RGB data.
+
+img2rgb is a python image program that do: Image Operation, and Image Processing.
 
 ## Prerequisities
 ### Main Tool
@@ -12,9 +13,13 @@ img2rgb is a python image processing app to convert image into RGB data.
 ### Project Library
 
 ```
-pandas 
-PIL 
+matplotlib
+pandas
+Pillow
 streamlit
+numpy
+stegano
+opencv-python-headless
 ```
 
 ## Installation
@@ -33,8 +38,8 @@ streamlit
 
 5. Install library
 
-```pip install pandas PIL streamlit```
+```pip install -r requirement.txt```
 
 6. Run the app
 
-```streamlit run img2rgb.py```
+```streamlit run Home.py```
